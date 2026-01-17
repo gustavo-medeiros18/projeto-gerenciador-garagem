@@ -34,6 +34,52 @@ def listar_carros():
     
     print("---------------------------------------------------------")
 
+def editar_carro():
+    placa = input("Digite a placa do carro a ser editado: ")
+
+    carro_existente = encontrar_carro(placa)
+
+    if carro_existente == None:
+        print("\nNão foi encontrado um carro com essa placa")
+        return
+
+    dicionario_atualizacao = {
+        "placa": carro_existente["placa"],
+        "cor": carro_existente["cor"],
+        "modelo": carro_existente["modelo"],
+        "ano": carro_existente["ano"]
+    }
+
+    print("\nPressione Enter para manter o valor atual.")
+
+    nova_placa = input(f"Nova placa (atual: {carro_existente['placa']}): ")
+    if len(nova_placa) > 0:
+        if encontrar_carro(nova_placa) != None:
+            print("\nJá existe um outro carro com essa placa.")
+            return
+
+        dicionario_atualizacao["placa"] = nova_placa
+    
+    nova_cor = input(f"Nova cor (atual: {carro_existente['cor']}): ")
+    if len(nova_cor) > 0:
+        dicionario_atualizacao["cor"] = nova_cor
+
+    novo_modelo = input(f"Novo modelo (atual: {carro_existente['modelo']}): ")
+    if len(novo_modelo) > 0:
+        dicionario_atualizacao["modelo"] = novo_modelo
+
+    novo_ano = input(f"Novo ano (atual: {carro_existente['ano']}): ")
+    if len(novo_ano) > 0:
+        dicionario_atualizacao["ano"] = int(novo_ano)
+
+    carro_existente["placa"] = dicionario_atualizacao["placa"]
+    carro_existente["cor"] = dicionario_atualizacao["cor"]
+    carro_existente["modelo"] = dicionario_atualizacao["modelo"]
+    carro_existente["ano"] = dicionario_atualizacao["ano"]
+
+    print("\nCarro editado com êxito.")
+
+
 def deletar_carro():
     placa = input("Digite a placa do carro a ser deletado: ")
 
@@ -64,7 +110,7 @@ while True:
     elif opcao_escolhida == "2":
         listar_carros()
     elif opcao_escolhida == "3":
-        print("\nAinda vamos implementar essa funcionalidade")
+        editar_carro()
     elif opcao_escolhida == "4":
         deletar_carro()
     elif opcao_escolhida == "5":
