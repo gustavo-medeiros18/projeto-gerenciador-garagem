@@ -1,4 +1,26 @@
-carros = []
+import json
+
+def ler_carros_arquivo():
+    try:
+        with open("carros.json", "r") as arquivo_json:
+            lista_convertida = json.load(arquivo_json)
+            return lista_convertida
+    except FileNotFoundError:
+        print("Primeira execução. Arquivo vazio ou inexistente.")
+
+        lista_convertida = []
+        return lista_convertida
+    except json.decoder.JSONDecodeError:
+        print("Conteúdo do arquivo não pode ser convertido.")
+
+        lista_convertida = []
+        return lista_convertida
+
+def salvar_carros():
+    with open("carros.json", "w") as arquivo_json:
+        json.dump(carros, arquivo_json, indent=2)
+
+carros = ler_carros_arquivo()
 
 def encontrar_carro(placa):
     carro_encontrado = None
@@ -48,6 +70,7 @@ def cadastrar_carro():
     }
 
     carros.append(carro)
+    salvar_carros()
     print("\nCarro cadastrado com êxito")
 
 def listar_carros():
@@ -58,7 +81,7 @@ def listar_carros():
     print("\n-------------------- LISTA DE CARROS --------------------")
 
     for carro in carros:
-        print(f"Placa: {repr(carro['placa'])} | Modelo: {repr( carro['modelo'])} | Cor: {repr(carro['cor'])} | Ano: {carro['ano']}")
+        print(f"Placa: {repr(carro["placa"])} | Modelo: {repr( carro["modelo"])} | Cor: {repr(carro["cor"])} | Ano: {carro["ano"]}")
     
     print("---------------------------------------------------------")
 
@@ -80,7 +103,7 @@ def editar_carro():
 
     print("\nPressione Enter para manter o valor atual.")
 
-    nova_placa = input(f"Nova placa (atual: {carro_existente['placa']}): ").strip()
+    nova_placa = input(f"Nova placa (atual: {carro_existente["placa"]}): ").strip()
 
     # nova_placa = cdc-2026
     # carro_existente["placa"] = cdc-2026
@@ -91,15 +114,15 @@ def editar_carro():
 
         dicionario_atualizacao["placa"] = nova_placa
     
-    nova_cor = input(f"Nova cor (atual: {carro_existente['cor']}): ").strip()
+    nova_cor = input(f"Nova cor (atual: {carro_existente["cor"]}): ").strip()
     if len(nova_cor) > 0:
         dicionario_atualizacao["cor"] = nova_cor
 
-    novo_modelo = input(f"Novo modelo (atual: {carro_existente['modelo']}): ").strip()
+    novo_modelo = input(f"Novo modelo (atual: {carro_existente["modelo"]}): ").strip()
     if len(novo_modelo) > 0:
         dicionario_atualizacao["modelo"] = novo_modelo
 
-    novo_ano = input(f"Novo ano (atual: {carro_existente['ano']}): ")
+    novo_ano = input(f"Novo ano (atual: {carro_existente["ano"]}): ")
     if len(novo_ano) > 0:
         try:
             dicionario_atualizacao["ano"] = int(novo_ano)
@@ -111,6 +134,8 @@ def editar_carro():
     carro_existente["cor"] = dicionario_atualizacao["cor"]
     carro_existente["modelo"] = dicionario_atualizacao["modelo"]
     carro_existente["ano"] = dicionario_atualizacao["ano"]
+
+    salvar_carros()
 
     print("\nCarro editado com êxito.")
 
@@ -125,6 +150,8 @@ def deletar_carro():
         return
     
     carros.remove(carro_retornado)
+    salvar_carros()
+
     print("\nCarro deletado com êxito")
 
 def exibir_menu():
