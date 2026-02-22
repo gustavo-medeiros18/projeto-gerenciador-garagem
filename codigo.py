@@ -1,4 +1,16 @@
+# Para pode executar o projeto, primeiro é necessário
+# ativar o ambiente virtual, e em seguida instalar
+# a biblioteca tabulate, que é utilizada por ele.
+# Isso pode ser feito através dos seguintes comandos
+# no terminal, que precisa estar aberto na pasta
+# do projeto:
+
+# python -m venv .venv
+# .\.venv\Scripts\activate
+# python -m pip install tabulate
+
 import json
+from tabulate import tabulate
 
 def ler_carros_arquivo():
     try:
@@ -73,7 +85,7 @@ def cadastrar_carro():
     salvar_carros()
     print("\nCarro cadastrado com êxito")
 
-def listar_carros():
+def exibir_carros_lista():
     if len(carros) == 0:
         print("\nNenhum carro cadastrado.")
         return
@@ -84,6 +96,16 @@ def listar_carros():
         print(f"Placa: {repr(carro["placa"])} | Modelo: {repr( carro["modelo"])} | Cor: {repr(carro["cor"])} | Ano: {carro["ano"]}")
     
     print("---------------------------------------------------------")
+
+def exibir_carros_tabela():
+    if len(carros) == 0:
+        print("\nNenhum carro cadastrado.")
+        return
+
+    print("\n------------ TABELA DE CARROS ------------")
+
+    tabela = tabulate(carros, headers="keys", tablefmt="fancy_grid")
+    print(tabela)
 
 def editar_carro():
     placa = input("Digite a placa do carro a ser editado: ").strip()
@@ -157,10 +179,11 @@ def deletar_carro():
 def exibir_menu():
     print("\n---------- GERENCIADOR DE GARAGEM ----------")
     print("1 - Cadastrar um carro")
-    print("2 - Listar os carros existentes")
-    print("3 - Editar um carro")
-    print("4 - Deletar um carro")
-    print("5 - Sair")
+    print("2 - Exibir os carros existentes (lista)")
+    print("3 - Exibir os carros existentes (tabela)")
+    print("4 - Editar um carro")
+    print("5 - Deletar um carro")
+    print("6 - Sair")
 
 while True:
     exibir_menu()
@@ -171,12 +194,14 @@ while True:
     if opcao_escolhida == "1":
         cadastrar_carro()
     elif opcao_escolhida == "2":
-        listar_carros()
+        exibir_carros_lista()
     elif opcao_escolhida == "3":
-        editar_carro()
+        exibir_carros_tabela()
     elif opcao_escolhida == "4":
-        deletar_carro()
+        editar_carro()
     elif opcao_escolhida == "5":
+        deletar_carro()
+    elif opcao_escolhida == "6":
         print("\nEncerrando o gerenciador de garagem. Até mais!")
         break
     else:
