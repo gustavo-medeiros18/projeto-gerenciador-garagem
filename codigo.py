@@ -28,19 +28,17 @@ def ler_carros_arquivo():
         lista_convertida = []
         return lista_convertida
 
-def salvar_carros():
+def salvar_carros(lista_carros):
     with open("carros.json", "w") as arquivo_json:
-        json.dump(carros, arquivo_json, indent=2)
+        json.dump(lista_carros, arquivo_json, indent=2)
 
-carros = ler_carros_arquivo()
-
-def encontrar_carro(placa):
+def encontrar_carro(placa, lista_carros):
     carro_encontrado = None
 
     # placa recebida: cdc-2026
     # placa do carro cadastrado: cdc-2026
 
-    for carro in carros:
+    for carro in lista_carros:
         if carro["placa"].lower() == placa.lower():
             carro_encontrado = carro
             break
@@ -53,7 +51,8 @@ def cadastrar_carro():
         print("\nO campo placa não pode ser vazio.")
         return
 
-    carro_existente = encontrar_carro(placa)
+    lista_carros = ler_carros_arquivo()
+    carro_existente = encontrar_carro(placa, lista_carros)
     if carro_existente != None:
         print("\nJá existe um carro cadastrado com essa placa.")
         return
@@ -81,36 +80,41 @@ def cadastrar_carro():
         "ano": ano
     }
 
-    carros.append(carro)
-    salvar_carros()
+    lista_carros.append(carro)
+    salvar_carros(lista_carros)
     print("\nCarro cadastrado com êxito")
 
 def exibir_carros_lista():
-    if len(carros) == 0:
+    lista_carros = ler_carros_arquivo()
+
+    if len(lista_carros) == 0:
         print("\nNenhum carro cadastrado.")
         return
 
     print("\n-------------------- LISTA DE CARROS --------------------")
 
-    for carro in carros:
+    for carro in lista_carros:
         print(f"Placa: {repr(carro["placa"])} | Modelo: {repr( carro["modelo"])} | Cor: {repr(carro["cor"])} | Ano: {carro["ano"]}")
     
     print("---------------------------------------------------------")
 
 def exibir_carros_tabela():
-    if len(carros) == 0:
+    lista_carros = ler_carros_arquivo()
+
+    if len(lista_carros) == 0:
         print("\nNenhum carro cadastrado.")
         return
 
     print("\n------------ TABELA DE CARROS ------------")
 
-    tabela = tabulate(carros, headers="keys", tablefmt="fancy_grid")
+    tabela = tabulate(lista_carros, headers="keys", tablefmt="fancy_grid")
     print(tabela)
 
 def editar_carro():
     placa = input("Digite a placa do carro a ser editado: ").strip()
 
-    carro_existente = encontrar_carro(placa)
+    lista_carros = ler_carros_arquivo()
+    carro_existente = encontrar_carro(placa, lista_carros)
 
     if carro_existente == None:
         print("\nNão foi encontrado um carro com essa placa")
@@ -130,7 +134,7 @@ def editar_carro():
     # nova_placa = cdc-2026
     # carro_existente["placa"] = cdc-2026
     if (len(nova_placa)) > 0 and (nova_placa.lower() != carro_existente["placa"].lower()):
-        if encontrar_carro(nova_placa) != None:
+        if encontrar_carro(nova_placa, lista_carros) != None:
             print("\nJá existe um outro carro com essa placa.")
             return
 
@@ -157,7 +161,7 @@ def editar_carro():
     carro_existente["modelo"] = dicionario_atualizacao["modelo"]
     carro_existente["ano"] = dicionario_atualizacao["ano"]
 
-    salvar_carros()
+    salvar_carros(lista_carros)
 
     print("\nCarro editado com êxito.")
 
@@ -165,14 +169,15 @@ def editar_carro():
 def deletar_carro():
     placa = input("Digite a placa do carro a ser deletado: ").strip()
 
-    carro_retornado = encontrar_carro(placa)
+    lista_carros = ler_carros_arquivo()
+    carro_retornado = encontrar_carro(placa, lista_carros)
 
     if carro_retornado == None:
         print("\nNão foi encontrado um carro com essa placa")
         return
     
-    carros.remove(carro_retornado)
-    salvar_carros()
+    lista_carros.remove(carro_retornado)
+    salvar_carros(lista_carros)
 
     print("\nCarro deletado com êxito")
 
