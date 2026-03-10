@@ -84,15 +84,9 @@ def exibir_carros_tabela():
     tabela = tabulate(lista_carros, headers="keys", tablefmt="fancy_grid")
     print(tabela)
 
-def editar_carro():
-    placa = input("Digite a placa do carro a ser editado: ").strip()
-
+def editar_carro(placa_busca, nova_placa, nova_cor, novo_modelo, novo_ano):
     lista_carros = ler_carros_arquivo()
-    carro_existente = encontrar_carro(placa, lista_carros)
-
-    if carro_existente == None:
-        print("\nNão foi encontrado um carro com essa placa")
-        return
+    carro_existente = encontrar_carro(placa_busca, lista_carros)
 
     dicionario_atualizacao = {
         "placa": carro_existente["placa"],
@@ -101,35 +95,18 @@ def editar_carro():
         "ano": carro_existente["ano"]
     }
 
-    print("\nPressione Enter para manter o valor atual.")
-
-    nova_placa = input(f"Nova placa (atual: {carro_existente["placa"]}): ").strip()
-
-    # nova_placa = cdc-2026
-    # carro_existente["placa"] = cdc-2026
-    if (len(nova_placa)) > 0 and (nova_placa.lower() != carro_existente["placa"].lower()):
-        if encontrar_carro(nova_placa, lista_carros) != None:
-            print("\nJá existe um outro carro com essa placa.")
-            return
-
+    if len(nova_placa) > 0:
         dicionario_atualizacao["placa"] = nova_placa
     
-    nova_cor = input(f"Nova cor (atual: {carro_existente["cor"]}): ").strip()
     if len(nova_cor) > 0:
         dicionario_atualizacao["cor"] = nova_cor
 
-    novo_modelo = input(f"Novo modelo (atual: {carro_existente["modelo"]}): ").strip()
     if len(novo_modelo) > 0:
         dicionario_atualizacao["modelo"] = novo_modelo
 
-    novo_ano = input(f"Novo ano (atual: {carro_existente["ano"]}): ")
-    if len(novo_ano) > 0:
-        try:
-            dicionario_atualizacao["ano"] = int(novo_ano)
-        except ValueError:
-            print("\nAno inválido. Alterações ignoradas.")
-            return
-
+    if novo_ano:
+        dicionario_atualizacao["ano"] = novo_ano
+        
     carro_existente["placa"] = dicionario_atualizacao["placa"]
     carro_existente["cor"] = dicionario_atualizacao["cor"]
     carro_existente["modelo"] = dicionario_atualizacao["modelo"]
@@ -196,7 +173,37 @@ while True:
     elif opcao_escolhida == "3":
         exibir_carros_tabela()
     elif opcao_escolhida == "4":
-        editar_carro()
+        placa_busca = input("Digite a placa do carro a ser editado: ").strip()
+
+        lista_carros = ler_carros_arquivo()
+        carro_existente = encontrar_carro(placa_busca, lista_carros)
+
+        if carro_existente == None:
+            print("\nNão foi encontrado um carro com essa placa")
+            continue
+
+        print("\nPressione Enter para manter o valor atual.")
+
+        nova_placa = input(f"Nova placa (atual: {carro_existente["placa"]}): ").strip()
+
+        if (len(nova_placa)) > 0 and (nova_placa.lower() != carro_existente["placa"].lower()):
+            if encontrar_carro(nova_placa, lista_carros) != None:
+                print("\nJá existe um outro carro com essa placa.")
+                continue
+        
+        nova_cor = input(f"Nova cor (atual: {carro_existente["cor"]}): ").strip()
+        novo_modelo = input(f"Novo modelo (atual: {carro_existente["modelo"]}): ").strip()
+
+        novo_ano = input(f"Novo ano (atual: {carro_existente["ano"]}): ")
+
+        if len(novo_ano) > 0:
+            try:
+                novo_ano = int(novo_ano)
+            except ValueError:
+                print("\nAno inválido. Alterações ignoradas.")
+                continue
+
+        editar_carro(placa_busca, nova_placa, nova_cor, novo_modelo, novo_ano)
     elif opcao_escolhida == "5":
         placa = input("Digite a placa do carro a ser deletado: ").strip()
 
