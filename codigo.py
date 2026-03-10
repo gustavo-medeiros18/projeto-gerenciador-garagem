@@ -45,34 +45,7 @@ def encontrar_carro(placa, lista_carros):
     
     return carro_encontrado
 
-def cadastrar_carro():
-    placa = input("Digite a placa: ").strip()
-    if len(placa) == 0:
-        print("\nO campo placa não pode ser vazio.")
-        return
-
-    lista_carros = ler_carros_arquivo()
-    carro_existente = encontrar_carro(placa, lista_carros)
-    if carro_existente != None:
-        print("\nJá existe um carro cadastrado com essa placa.")
-        return
-
-    cor = input("Digite a cor: ").strip()
-    if len(cor) == 0:
-        print("\nO campo cor não pode ser vazio.")
-        return
-
-    modelo = input("Digite o modelo: ").strip()
-    if len(modelo) == 0:
-        print("\nO campo modelo não pode ser vazio.")
-        return
-
-    try:
-        ano = int(input("Digite o ano: "))
-    except ValueError:
-        print("\nAno inválido. Digite apenas números.")
-        return
-
+def cadastrar_carro(placa, cor, modelo, ano):
     carro = {
         "placa": placa,
         "cor": cor,
@@ -80,6 +53,7 @@ def cadastrar_carro():
         "ano": ano
     }
 
+    lista_carros = ler_carros_arquivo()
     lista_carros.append(carro)
     salvar_carros(lista_carros)
     print("\nCarro cadastrado com êxito")
@@ -166,17 +140,10 @@ def editar_carro():
     print("\nCarro editado com êxito.")
 
 
-def deletar_carro():
-    placa = input("Digite a placa do carro a ser deletado: ").strip()
-
+def deletar_carro(carro_apagar):
     lista_carros = ler_carros_arquivo()
-    carro_retornado = encontrar_carro(placa, lista_carros)
 
-    if carro_retornado == None:
-        print("\nNão foi encontrado um carro com essa placa")
-        return
-    
-    lista_carros.remove(carro_retornado)
+    lista_carros.remove(carro_apagar)
     salvar_carros(lista_carros)
 
     print("\nCarro deletado com êxito")
@@ -197,7 +164,33 @@ while True:
     print(f"A opção escolhida foi {repr(opcao_escolhida)}")
 
     if opcao_escolhida == "1":
-        cadastrar_carro()
+        placa = input("Digite a placa: ").strip()
+        if len(placa) == 0:
+            print("\nO campo placa não pode ser vazio.")
+            continue
+
+        lista_carros = ler_carros_arquivo()
+        carro_existente = encontrar_carro(placa, lista_carros)
+        if carro_existente != None:
+            print("\nJá existe um carro cadastrado com essa placa.")
+            continue
+
+        cor = input("Digite a cor: ").strip()
+        if len(cor) == 0:
+            print("\nO campo cor não pode ser vazio.")
+            continue
+
+        modelo = input("Digite o modelo: ").strip()
+        if len(modelo) == 0:
+            print("\nO campo modelo não pode ser vazio.")
+            continue
+
+        try:
+            ano = int(input("Digite o ano: "))
+        except ValueError:
+            print("\nAno inválido. Digite apenas números.")
+            continue
+        cadastrar_carro(placa, cor, modelo, ano)
     elif opcao_escolhida == "2":
         exibir_carros_lista()
     elif opcao_escolhida == "3":
@@ -205,7 +198,15 @@ while True:
     elif opcao_escolhida == "4":
         editar_carro()
     elif opcao_escolhida == "5":
-        deletar_carro()
+        placa = input("Digite a placa do carro a ser deletado: ").strip()
+
+        lista_carros = ler_carros_arquivo()
+        carro_retornado = encontrar_carro(placa, lista_carros)
+
+        if carro_retornado == None:
+            print("\nNão foi encontrado um carro com essa placa")
+            continue
+        deletar_carro(carro_retornado)
     elif opcao_escolhida == "6":
         print("\nEncerrando o gerenciador de garagem. Até mais!")
         break
